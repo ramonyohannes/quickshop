@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import './screens/home_page.dart';
+
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
@@ -8,15 +10,50 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Material App',
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Material App Bar'),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Colors.purple,
+        primarySwatch: Colors.amber,
+        appBarTheme: const AppBarTheme(
+          centerTitle: true,
+          backgroundColor: Colors.white10,
+          elevation: 0,
+          titleTextStyle: TextStyle(
+            color: Colors.black,
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Lato',
+          ),
         ),
-        body: const Center(
-          child: Text('Hello World'),
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(
+            fontSize: 20,
+            fontFamily: 'Lato',
+            fontWeight: FontWeight.bold,
+          ),
+          bodyMedium: TextStyle(
+            fontSize: 18,
+            fontFamily: 'Lato',
+            fontWeight: FontWeight.bold,
+          ),
+          bodySmall: TextStyle(
+            fontSize: 16,
+            fontFamily: 'Lato',
+            fontWeight: FontWeight.bold,
+          ),
+          labelMedium: TextStyle(
+            fontSize: 18,
+            fontFamily: 'Lato',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.black,
+          size: 30,
         ),
       ),
+      title: 'QuickCart',
+      home: const HomePage(),
     );
   }
 }
