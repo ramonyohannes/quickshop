@@ -8,16 +8,28 @@ class ProductsItem extends StatelessWidget {
   final String imageUrl;
 
   const ProductsItem({
-    super.key,
+    Key? key,
     required this.id,
     required this.title,
     required this.imageUrl,
-  });
+  }) : super(key: key);
 
   void selectProduct(BuildContext context) {
     Navigator.of(context).pushNamed(
       ProductDetailScreen.routeName,
       arguments: id,
+    );
+  }
+
+  IconButton buildIconButton(
+      BuildContext context, IconData iconData, VoidCallback onPressed) {
+    return IconButton(
+      onPressed: onPressed,
+      icon: Icon(
+        iconData,
+        color: Theme.of(context).primaryColor,
+        size: 30,
+      ),
     );
   }
 
@@ -29,24 +41,13 @@ class ProductsItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
         child: GridTile(
           footer: GridTileBar(
-            title: Text(title),
+            title: Text(
+              title,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
             backgroundColor: Colors.black87,
-            leading: IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.favorite,
-                color: Theme.of(context).primaryColor,
-                size: 30,
-              ),
-            ),
-            trailing: IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.shopping_cart,
-                color: Theme.of(context).primaryColor,
-                size: 30,
-              ),
-            ),
+            leading: buildIconButton(context, Icons.favorite, () {}),
+            trailing: buildIconButton(context, Icons.shopping_cart, () {}),
           ),
           child: InkWell(
             onTap: () => selectProduct(context),

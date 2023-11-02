@@ -33,8 +33,9 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
           bodyMedium: TextStyle(
-            fontSize: 18,
+            fontSize: 13,
             fontFamily: 'Lato',
+            color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
           bodySmall: TextStyle(
