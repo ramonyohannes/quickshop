@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './screens/home_page.dart';
+import 'screens/products_overview_screen.dart';
+import './screens/products_detail_screen.dart';
 
 void main() => runApp(const MyApp());
 
@@ -53,7 +54,11 @@ class MyApp extends StatelessWidget {
         ),
       ),
       title: 'QuickCart',
-      home: const HomePage(),
+      home: ProductsOverViewScreen(),
+      routes: {
+        "./": (context) => ProductsOverViewScreen(),
+        ProductDetailScreen.routeName: (context) => const ProductDetailScreen(),
+      },
     );
   }
 }
