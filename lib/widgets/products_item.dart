@@ -51,7 +51,12 @@ class ProductsItem extends StatelessWidget {
             }),
             trailing:
                 buildIconButton(context, const Icon(Icons.shopping_cart), () {
-              cart.addCartItem(productItem.id);
+              cart.addCartItem(
+                productItem.id,
+                productItem.title,
+                productItem.description,
+                productItem.price,
+              );
             }),
           ),
           child: InkWell(

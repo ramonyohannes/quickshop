@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quickcart_app/screens/cart_screen.dart';
 
 import '../providers/cart.dart';
 import '../widgets/products_grid.dart';
@@ -20,6 +21,12 @@ class ProductsOverViewScreen extends StatefulWidget {
 
 class _ProductsOverViewScreenState extends State<ProductsOverViewScreen> {
   bool _showOnlyFavorites = false;
+
+  void selectProduct(BuildContext context) {
+    Navigator.of(context).pushNamed(
+      CartScreen.routeName,
+    );
+  }
 
   PopupMenuButton<MenuOption> buildPopupMenuButton() {
     return PopupMenuButton<MenuOption>(
@@ -55,10 +62,13 @@ class _ProductsOverViewScreenState extends State<ProductsOverViewScreen> {
             child: Row(
               children: [
                 buildPopupMenuButton(),
-                CartBadge(
-                  value: cart.getItemCount.toString(),
-                  child: const Icon(
-                    Icons.shopping_cart_rounded,
+                InkWell(
+                  onTap: () => selectProduct(context),
+                  child: CartBadge(
+                    value: cart.getItemCount.toString(),
+                    child: const Icon(
+                      Icons.shopping_cart_rounded,
+                    ),
                   ),
                 ),
               ],

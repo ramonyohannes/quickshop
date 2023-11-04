@@ -27,10 +27,11 @@ class Cart with ChangeNotifier {
     return _items.length;
   }
 
-  void addCartItem(String id) {
-    if (_items.containsKey(id)) {
+  void addCartItem(
+      String productId, String title, String discription, double price) {
+    if (_items.containsKey(productId)) {
       _items.update(
-          id,
+          productId,
           (existingCartItem) => CartItem(
                 id: existingCartItem.id,
                 title: existingCartItem.title,
@@ -40,15 +41,27 @@ class Cart with ChangeNotifier {
               ));
     } else {
       _items.putIfAbsent(
-          id,
-          () => CartItem(
-                id: DateTime.now().toString(),
-                title: 'title',
-                discription: 'discription',
-                price: 0.0,
-                quantity: 1,
-              ));
+        productId,
+        () => CartItem(
+          id: DateTime.now().toString(),
+          title: title,
+          discription: discription,
+          price: price,
+          quantity: 1,
+        ),
+      );
     }
     notifyListeners();
+  }
+
+  double get totalAmount {
+    var total = 0.0;
+    _items.forEach(
+      (key, cartItem) {
+        total += cartItem.price * cartItem.quantity;
+      },
+    );
+
+    return total;
   }
 }
