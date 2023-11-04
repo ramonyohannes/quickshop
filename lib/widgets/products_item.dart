@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:quickcart_app/providers/cart.dart';
 
 import '../screens/products_detail_screen.dart';
 import '../providers/product.dart';
@@ -23,6 +24,7 @@ class ProductsItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productItem = Provider.of<Product>(context);
+    final cart = Provider.of<Cart>(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -47,8 +49,10 @@ class ProductsItem extends StatelessWidget {
                       ), () {
               productItem.toggleFavoriteStatus();
             }),
-            trailing: buildIconButton(
-                context, const Icon(Icons.shopping_cart), () {}),
+            trailing:
+                buildIconButton(context, const Icon(Icons.shopping_cart), () {
+              cart.addCartItem(productItem.id);
+            }),
           ),
           child: InkWell(
             onTap: () => selectProduct(context, productItem.id),

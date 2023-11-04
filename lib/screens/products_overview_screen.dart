@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../providers/cart.dart';
 import '../widgets/products_grid.dart';
+import '../widgets/badge.dart';
+
+import 'package:provider/provider.dart';
 
 enum MenuOption {
   onlyFavorited,
@@ -41,10 +45,26 @@ class _ProductsOverViewScreenState extends State<ProductsOverViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<Cart>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('QuickCart'),
-        actions: [buildPopupMenuButton()],
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                buildPopupMenuButton(),
+                CartBadge(
+                  value: cart.getItemCount.toString(),
+                  child: const Icon(
+                    Icons.shopping_cart_rounded,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
       body: ProductsGrid(_showOnlyFavorites),
     );
