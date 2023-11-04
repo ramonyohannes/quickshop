@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.amber,
           colorScheme: const ColorScheme.light(
             primary: Colors.purple,
+            secondary: Colors.white,
           ),
           appBarTheme: const AppBarTheme(
             centerTitle: true,
@@ -65,6 +66,7 @@ class MyApp extends StatelessWidget {
             color: Colors.black,
             size: 30,
           ),
+          
         ),
         title: 'QuickCart',
         routes: {

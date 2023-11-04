@@ -16,15 +16,8 @@ class ProductsItem extends StatelessWidget {
   }
 
   IconButton buildIconButton(
-      BuildContext context, IconData iconData, VoidCallback onPressed) {
-    return IconButton(
-      onPressed: onPressed,
-      icon: Icon(
-        iconData,
-        color: Theme.of(context).colorScheme.secondary,
-        size: 30,
-      ),
-    );
+      BuildContext context, Icon iconData, VoidCallback onPressed) {
+    return IconButton(onPressed: onPressed, icon: iconData);
   }
 
   @override
@@ -45,11 +38,17 @@ class ProductsItem extends StatelessWidget {
             leading: buildIconButton(
                 context,
                 productItem.getIsFavorite
-                    ? Icons.favorite
-                    : Icons.favorite_border, () {
+                    ? Icon(
+                        Icons.favorite,
+                        color: Theme.of(context).primaryColor,
+                      )
+                    : const Icon(
+                        Icons.favorite_border,
+                      ), () {
               productItem.toggleFavoriteStatus();
             }),
-            trailing: buildIconButton(context, Icons.shopping_cart, () {}),
+            trailing: buildIconButton(
+                context, const Icon(Icons.shopping_cart), () {}),
           ),
           child: InkWell(
             onTap: () => selectProduct(context, productItem.id),
