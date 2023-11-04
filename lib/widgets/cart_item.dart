@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+
+import '../providers/cart.dart';
+
 class CartItems extends StatelessWidget {
+  final String productId;
   final String title;
   final double price;
   final int quantity;
 
   const CartItems({
     super.key,
+    required this.productId,
     required this.title,
     required this.price,
     required this.quantity,
@@ -14,23 +20,44 @@ class CartItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Theme.of(context).primaryColor,
-          child: FittedBox(
-            fit: BoxFit.cover,
-            child: Text(
-              "\$${price.toStringAsFixed(1)}",
-              style: Theme.of(context).textTheme.labelMedium,
-            ),
+    final cart = Provider.of<Cart>(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Dismissible(
+        key: ValueKey(productId),
+        background: Container(
+          color: Colors.red, // Background color when swiping
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.only(right: 20.0),
+          child: const Icon(
+            Icons.delete,
+            color: Colors.white,
           ),
         ),
-        title: Text(title),
-        subtitle: Text(
-          "Total: \$${(price * quantity)}",
+        direction: DismissDirection.endToStart,
+        behavior: HitTestBehavior.translucent,
+        onDismissed: (direction) {
+          cart.removeItem(productId);
+        },
+        child: Card(
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Theme.of(context).primaryColor,
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: Text(
+                  "\$${price.toStringAsFixed(1)}",
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+              ),
+            ),
+            title: Text(title),
+            subtitle: Text(
+              "Total: \$${(price * quantity)}",
+            ),
+            trailing: Text("$quantity x"),
+          ),
         ),
-        trailing: Text("$quantity x"),
       ),
     );
   }
