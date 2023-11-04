@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../providers/product.dart';
-import '../screens/products_detail_screen.dart';
 import 'package:provider/provider.dart';
+
+import '../screens/products_detail_screen.dart';
+import '../providers/product.dart';
 
 class ProductsItem extends StatelessWidget {
   const ProductsItem({super.key});
@@ -20,7 +21,7 @@ class ProductsItem extends StatelessWidget {
       onPressed: onPressed,
       icon: Icon(
         iconData,
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).colorScheme.secondary,
         size: 30,
       ),
     );

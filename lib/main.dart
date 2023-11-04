@@ -20,6 +20,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: Colors.purple,
           primarySwatch: Colors.amber,
+          colorScheme: const ColorScheme.light(
+            primary: Colors.purple,
+          ),
           appBarTheme: const AppBarTheme(
             centerTitle: true,
             backgroundColor: Colors.white10,
@@ -29,6 +32,9 @@ class MyApp extends StatelessWidget {
               fontSize: 25,
               fontWeight: FontWeight.bold,
               fontFamily: 'Lato',
+            ),
+            iconTheme: IconThemeData(
+              color: Colors.black, // Change the color
             ),
           ),
           textTheme: const TextTheme(
