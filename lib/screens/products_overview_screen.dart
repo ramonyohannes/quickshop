@@ -6,6 +6,7 @@ import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
 
 import 'package:provider/provider.dart';
+import '../widgets/side_drawer.dart';
 
 enum MenuOption {
   onlyFavorited,
@@ -76,6 +77,7 @@ class _ProductsOverViewScreenState extends State<ProductsOverViewScreen> {
           ),
         ],
       ),
+      drawer: const SideDrawer(),
       body: ProductsGrid(_showOnlyFavorites),
     );
   }

@@ -10,9 +10,10 @@ class CartScreen extends StatelessWidget {
 
   const CartScreen({Key? key}) : super(key: key);
 
-  TextButton buildTextButton(BuildContext context, String text) {
+  TextButton buildTextButton(BuildContext context, String text,
+      {Function? onPressed}) {
     return TextButton(
-      onPressed: () {},
+      onPressed: () => onPressed!(),
       child: Text(
         text,
         style: Theme.of(context).textTheme.labelLarge,
@@ -57,7 +58,9 @@ class CartScreen extends StatelessWidget {
                     const SizedBox(
                       width: 10,
                     ),
-                    buildTextButton(context, "Order Now"),
+                    buildTextButton(context, "Order Now", onPressed: () {
+                      cart.clearCart();
+                    }),
                   ],
                 ),
               ),
