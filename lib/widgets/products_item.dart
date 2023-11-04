@@ -1,20 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../providers/product.dart';
 import '../screens/products_detail_screen.dart';
+import 'package:provider/provider.dart';
 
 class ProductsItem extends StatelessWidget {
-  final String id;
-  final String title;
-  final String imageUrl;
+  const ProductsItem({super.key});
 
-  const ProductsItem({
-    Key? key,
-    required this.id,
-    required this.title,
-    required this.imageUrl,
-  }) : super(key: key);
-
-  void selectProduct(BuildContext context) {
+  void selectProduct(BuildContext context, String id) {
     Navigator.of(context).pushNamed(
       ProductDetailScreen.routeName,
       arguments: id,
@@ -35,6 +28,8 @@ class ProductsItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productItem = Provider.of<Product>(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: ClipRRect(
@@ -42,17 +37,23 @@ class ProductsItem extends StatelessWidget {
         child: GridTile(
           footer: GridTileBar(
             title: Text(
-              title,
-              style: Theme.of(context).textTheme.bodyMedium,
+              productItem.title,
+              style: Theme.of(context).textTheme.labelMedium,
             ),
             backgroundColor: Colors.black87,
-            leading: buildIconButton(context, Icons.favorite, () {}),
+            leading: buildIconButton(
+                context,
+                productItem.getIsFavorite
+                    ? Icons.favorite
+                    : Icons.favorite_border, () {
+              productItem.toggleFavoriteStatus();
+            }),
             trailing: buildIconButton(context, Icons.shopping_cart, () {}),
           ),
           child: InkWell(
-            onTap: () => selectProduct(context),
+            onTap: () => selectProduct(context, productItem.id),
             child: Image.network(
-              imageUrl,
+              productItem.imageUrl,
               fit: BoxFit.cover,
             ),
           ),
