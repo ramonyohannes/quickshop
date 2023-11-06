@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: themeDatas(),
+        theme: themeData(),
         title: 'QuickCart',
         routes: {
           "/": (context) => const ProductsOverViewScreen(),

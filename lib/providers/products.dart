@@ -5,7 +5,7 @@ import 'product.dart';
 class Products with ChangeNotifier {
   final List<Product> _productItems = [
     Product(
-      productID: 'p1',
+      productId: 'p1',
       productTitle: 'Red Shirt',
       productDiscription: 'A red shirt - it is pretty red!',
       productPrice: 29.99,
@@ -13,7 +13,7 @@ class Products with ChangeNotifier {
           'https://cdn.pixabay.com/photo/2016/10/02/22/17/red-t-shirt-1710578_1280.jpg',
     ),
     Product(
-      productID: 'p2',
+      productId: 'p2',
       productTitle: 'Trousers',
       productDiscription: 'A nice pair of trousers.',
       productPrice: 59.99,
@@ -21,7 +21,7 @@ class Products with ChangeNotifier {
           'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Trousers%2C_dress_%28AM_1960.022-8%29.jpg/512px-Trousers%2C_dress_%28AM_1960.022-8%29.jpg',
     ),
     Product(
-      productID: 'p3',
+      productId: 'p3',
       productTitle: 'Yellow Scarf',
       productDiscription:
           'Warm and cozy - exactly what you need for the winter.',
@@ -30,7 +30,7 @@ class Products with ChangeNotifier {
           'https://live.staticflickr.com/4043/4438260868_cc79b3369d_z.jpg',
     ),
     Product(
-      productID: 'p4',
+      productId: 'p4',
       productTitle: 'A Pan',
       productDiscription: 'Prepare any meal you want.',
       productPrice: 49.99,
@@ -50,6 +50,6 @@ class Products with ChangeNotifier {
   }
 
   Product findProductById(String id) {
-    return _productItems.firstWhere((element) => element.productID == id);
+    return _productItems.firstWhere((element) => element.productId == id);
   }
 }

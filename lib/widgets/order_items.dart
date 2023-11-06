@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import '../widgets/order_details.dart';
-
 import '../providers/order.dart';
+
+import '../widgets/order_details.dart';
 
 class OrderItems extends StatefulWidget {
   final OrderItem orderItemValue;
@@ -26,7 +26,7 @@ class _OrderItemsState extends State<OrderItems> {
         children: [
           ListTile(
             title: Text(
-              "\$${widget.orderItemValue.orderTotalAmount}",
+              "\$${widget.orderItemValue.orderAmount}",
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
-import '../widgets/side_drawer.dart';
 import '../providers/order.dart';
+
+import '../widgets/side_drawer.dart';
 import '../widgets/order_items.dart';
 
 class OrderScreen extends StatelessWidget {

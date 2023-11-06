@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-ThemeData themeDatas() {
+ThemeData themeData() {
   return ThemeData(
     primaryColor: Colors.purple,
     primarySwatch: Colors.amber,
