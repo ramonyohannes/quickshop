@@ -37,7 +37,7 @@ class CartItems extends StatelessWidget {
         direction: DismissDirection.endToStart,
         behavior: HitTestBehavior.translucent,
         onDismissed: (direction) {
-          cart.removeItem(productId);
+          cart.removeCartItem(productId);
         },
         child: Card(
           child: ListTile(

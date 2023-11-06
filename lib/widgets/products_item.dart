@@ -34,13 +34,13 @@ class ProductsItem extends StatelessWidget {
         child: GridTile(
           footer: GridTileBar(
             title: Text(
-              productItem.title,
+              productItem.productTitle,
               style: Theme.of(context).textTheme.labelMedium,
             ),
             backgroundColor: Colors.black87,
             leading: buildIconButton(
                 context,
-                productItem.getIsFavorite
+                productItem.getIsProductFavorite
                     ? Icon(
                         Icons.favorite,
                         color: Theme.of(context).primaryColor,
@@ -53,17 +53,17 @@ class ProductsItem extends StatelessWidget {
             trailing:
                 buildIconButton(context, const Icon(Icons.shopping_cart), () {
               cart.addCartItem(
-                productItem.id,
-                productItem.title,
-                productItem.description,
-                productItem.price,
+                productItem.productID,
+                productItem.productTitle,
+                productItem.productDiscription,
+                productItem.productPrice,
               );
             }),
           ),
           child: InkWell(
-            onTap: () => selectProduct(context, productItem.id),
+            onTap: () => selectProduct(context, productItem.productID),
             child: Image.network(
-              productItem.imageUrl,
+              productItem.productImageUrl,
               fit: BoxFit.cover,
             ),
           ),

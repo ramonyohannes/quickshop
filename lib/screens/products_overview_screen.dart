@@ -68,7 +68,7 @@ class _ProductsOverViewScreenState extends State<ProductsOverViewScreen> {
                 InkWell(
                   onTap: () => selectProduct(context),
                   child: CartBadge(
-                    value: cart.getItemCount.toString(),
+                    value: cart.getCartItemCount.toString(),
                     child: const Icon(
                       Icons.shopping_cart_rounded,
                     ),
