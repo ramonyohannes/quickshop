@@ -1,8 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
+
+import '../widgets/order_details.dart';
 
 import '../providers/order.dart';
 
@@ -50,45 +50,7 @@ class _OrderItemsState extends State<OrderItems> {
               },
             ),
           ),
-          if (expanded)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                height: min(
-                    widget.orderItemValue.orderProducts.length * 20.0 + 10,
-                    100),
-                child: ListView.builder(
-                  itemCount: widget.orderItemValue.orderProducts.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            widget.orderItemValue.orderProducts[index]
-                                .productTitle,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            "${widget.orderItemValue.orderProducts[index].quantity}x \$${widget.orderItemValue.orderProducts[index].productPrice}",
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
+          if (expanded) OrderDetails(widget.orderItemValue),
         ],
       ),
     );
