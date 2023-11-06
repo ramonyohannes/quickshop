@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-import 'package:quickcart_app/providers/cart.dart';
+
+import '../providers/product.dart';
+import '../providers/cart.dart';
 
 import '../screens/products_detail_screen.dart';
-import '../providers/product.dart';
 
 class ProductsItem extends StatelessWidget {
   const ProductsItem({super.key});

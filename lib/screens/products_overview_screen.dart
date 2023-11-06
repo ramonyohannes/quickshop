@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:quickcart_app/screens/cart_screen.dart';
-
-import '../providers/cart.dart';
-import '../widgets/products_grid.dart';
-import '../widgets/badge.dart';
 
 import 'package:provider/provider.dart';
+
+import '../providers/cart.dart';
+
+import '../screens/cart_screen.dart';
+
+import '../widgets/products_grid.dart';
+import '../widgets/badge.dart';
 import '../widgets/side_drawer.dart';
 
 enum MenuOption {
