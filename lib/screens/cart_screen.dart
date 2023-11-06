@@ -3,23 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/cart.dart';
+import '../providers/order.dart';
 import '../widgets/cart_item.dart';
 
 class CartScreen extends StatelessWidget {
   static const routeName = "/cart-screen";
 
   const CartScreen({Key? key}) : super(key: key);
-
-  TextButton buildTextButton(BuildContext context, String text,
-      {Function? onPressed}) {
-    return TextButton(
-      onPressed: () => onPressed!(),
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.labelLarge,
-      ),
-    );
-  }
 
   Chip buildChip(BuildContext context, String label) {
     return Chip(
@@ -35,6 +25,7 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
     final cartItems = cart.getItems.values.toList();
+    final order = Provider.of<Order>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -58,9 +49,19 @@ class CartScreen extends StatelessWidget {
                     const SizedBox(
                       width: 10,
                     ),
-                    buildTextButton(context, "Order Now", onPressed: () {
-                      cart.clearCart();
-                    }),
+                    TextButton(
+                      onPressed: () {
+                        order.addOrder(
+                          cartItems,
+                          cart.totalAmount,
+                        );
+                        cart.clearCart();
+                      },
+                      child: Text(
+                        "Order Now",
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ),
+                    )
                   ],
                 ),
               ),
