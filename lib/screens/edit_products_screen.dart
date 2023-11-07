@@ -21,6 +21,18 @@ class _EditProductsState extends State<EditProducts> {
   final _discriptionFocusNode = FocusNode();
   final _imageUrlFocusNode = FocusNode();
 
+  @override
+  void initState() {
+    _imageUrlFocusNode.addListener(_handleImageUrlFocusChange);
+    super.initState();
+  }
+
+  void _handleImageUrlFocusChange() {
+    if (!_imageUrlFocusNode.hasFocus) {
+      setState(() {});
+    }
+  }
+
   var editedProduct = Product(
     productId: "",
     productTitle: "",
@@ -40,9 +52,12 @@ class _EditProductsState extends State<EditProducts> {
   }
 
   void _submitForm() {
-    _formKey.currentState!.save();
-    Provider.of<Products>(context, listen: false).addProduct(editedProduct);
-    Navigator.of(context).pop();
+    final isValid = _formKey.currentState!.validate();
+    if (isValid) {
+      _formKey.currentState!.save();
+      Provider.of<Products>(context, listen: false).addProduct(editedProduct);
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -71,6 +86,12 @@ class _EditProductsState extends State<EditProducts> {
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
                 focusNode: _titleFocusNode,
+                validator: (value) {
+                  if (value.toString().isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
                 onSaved: (newValue) {
                   setState(() {
                     editedProduct = Product(
@@ -92,6 +113,20 @@ class _EditProductsState extends State<EditProducts> {
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.next,
                 focusNode: _priceFocusNode,
+                validator: (value) {
+                  if (value.toString().isEmpty) {
+                    return 'Please enter a price';
+                  }
+                  try {
+                    double price = double.parse(value.toString());
+                    if (price <= 0) {
+                      return 'Price must be greater than zero';
+                    }
+                  } catch (e) {
+                    return 'Invalid price format';
+                  }
+                  return null;
+                },
                 onSaved: (newValue) {
                   editedProduct = Product(
                     productId: editedProduct.productId,
@@ -112,6 +147,12 @@ class _EditProductsState extends State<EditProducts> {
                 textInputAction: TextInputAction.next,
                 focusNode: _discriptionFocusNode,
                 maxLines: 3,
+                validator: (value) {
+                  if (value.toString().isEmpty) {
+                    return 'Please enter a description';
+                  }
+                  return null;
+                },
                 onSaved: (newValue) {
                   editedProduct = Product(
                     productId: editedProduct.productId,
@@ -137,21 +178,17 @@ class _EditProductsState extends State<EditProducts> {
                     decoration: BoxDecoration(
                       border: Border.all(width: 1, color: Colors.grey),
                     ),
-                    // child: _imageTextController.text.isEmpty
-                    //     ? const Text(
-                    //         "ImageUrl",
-                    //         textAlign: TextAlign.center,
-                    //       )
-                    //     : FittedBox(
-                    //         child: Image.network(
-                    //           _imageTextController.value.toString(),
-                    //           fit: BoxFit.cover,
-                    //         ),
-                    //       ),
-                    child: const Text(
-                      "ImageUrl",
-                      textAlign: TextAlign.center,
-                    ),
+                    child: _imageTextController.text.isEmpty
+                        ? const Text(
+                            "ImageUrl",
+                            textAlign: TextAlign.center,
+                          )
+                        : FittedBox(
+                            child: Image.network(
+                              _imageTextController.text.toString(),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                   ),
                   const SizedBox(
                     width: 5,
@@ -163,6 +200,16 @@ class _EditProductsState extends State<EditProducts> {
                       textInputAction: TextInputAction.next,
                       controller: _imageTextController,
                       focusNode: _imageUrlFocusNode,
+                      validator: (value) {
+                        if (value.toString().isEmpty) {
+                          return 'Please enter an image URL';
+                        }
+                        if (!(value.toString().endsWith('.png') ||
+                            value.toString().endsWith('.jpg'))) {
+                          return 'Invalid image format. Supported formats are PNG and JPG';
+                        }
+                        return null;
+                      },
                       onSaved: (newValue) {
                         editedProduct = Product(
                           productId: editedProduct.productId,
