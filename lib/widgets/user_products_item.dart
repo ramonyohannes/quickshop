@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 
 import '../providers/products.dart';
 
+import '../screens/edit_products_screen.dart';
+
 class UserProductsItem extends StatelessWidget {
   final String productId;
   final String productTitle;
@@ -29,7 +31,10 @@ class UserProductsItem extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushNamed(EditProducts.routeName, arguments: productId);
+                },
                 icon: Icon(
                   Icons.edit,
                   color: Theme.of(context).primaryColor,

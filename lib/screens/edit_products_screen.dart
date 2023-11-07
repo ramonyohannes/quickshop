@@ -15,7 +15,7 @@ class EditProducts extends StatefulWidget {
 class _EditProductsState extends State<EditProducts> {
   final _formKey = GlobalKey<FormState>();
   final _imageTextController = TextEditingController();
-
+  bool _isInit = true;
   final _titleFocusNode = FocusNode();
   final _priceFocusNode = FocusNode();
   final _discriptionFocusNode = FocusNode();
@@ -25,6 +25,28 @@ class _EditProductsState extends State<EditProducts> {
   void initState() {
     _imageUrlFocusNode.addListener(_handleImageUrlFocusChange);
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      final productId = ModalRoute.of(context)!.settings.arguments as String;
+      if (productId != null && productId.isNotEmpty) {
+        final product = Provider.of<Products>(context, listen: false)
+            .findProductById(productId);
+        editedProduct = Product(
+          productId: product.productId,
+          productTitle: product.productTitle,
+          productDiscription: product.productDiscription,
+          productPrice: product.productPrice,
+          productImageUrl: product.productImageUrl,
+        );
+        _imageTextController.text = editedProduct.productImageUrl;
+      }
+      _isInit = false;
+    }
+
+    super.didChangeDependencies();
   }
 
   void _handleImageUrlFocusChange() {
@@ -37,7 +59,7 @@ class _EditProductsState extends State<EditProducts> {
     productId: "",
     productTitle: "",
     productDiscription: "",
-    productPrice: 0,
+    productPrice: 0.0,
     productImageUrl: "",
   );
 
@@ -53,10 +75,16 @@ class _EditProductsState extends State<EditProducts> {
 
   void _submitForm() {
     final isValid = _formKey.currentState!.validate();
+    _formKey.currentState!.save();
     if (isValid) {
-      _formKey.currentState!.save();
-      Provider.of<Products>(context, listen: false).addProduct(editedProduct);
-      Navigator.of(context).pop();
+      if (editedProduct.productId.isNotEmpty) {
+        Provider.of<Products>(context, listen: false)
+            .updateProduct(editedProduct.productId, editedProduct);
+        Navigator.of(context).pop();
+      } else {
+        Provider.of<Products>(context, listen: false).addProduct(editedProduct);
+        Navigator.of(context).pop();
+      }
     }
   }
 
@@ -83,6 +111,7 @@ class _EditProductsState extends State<EditProducts> {
             children: [
               TextFormField(
                 decoration: const InputDecoration(labelText: "Title"),
+                initialValue: editedProduct.productTitle,
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
                 focusNode: _titleFocusNode,
@@ -110,6 +139,7 @@ class _EditProductsState extends State<EditProducts> {
               ),
               TextFormField(
                 decoration: const InputDecoration(labelText: "Price"),
+                initialValue: editedProduct.productPrice.toString(),
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.next,
                 focusNode: _priceFocusNode,
@@ -143,6 +173,7 @@ class _EditProductsState extends State<EditProducts> {
               ),
               TextFormField(
                 decoration: const InputDecoration(labelText: "Description"),
+                initialValue: editedProduct.productDiscription,
                 keyboardType: TextInputType.multiline,
                 textInputAction: TextInputAction.next,
                 focusNode: _discriptionFocusNode,
