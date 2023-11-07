@@ -50,15 +50,33 @@ class ProductsItem extends StatelessWidget {
                       ), () {
               productItem.toggleFavoriteStatus();
             }),
-            trailing:
-                buildIconButton(context, const Icon(Icons.shopping_cart), () {
-              cart.addCartItem(
-                productItem.productId,
-                productItem.productTitle,
-                productItem.productDiscription,
-                productItem.productPrice,
-              );
-            }),
+            trailing: buildIconButton(
+              context,
+              const Icon(Icons.shopping_cart),
+              () {
+                cart.addCartItem(
+                  productItem.productId,
+                  productItem.productTitle,
+                  productItem.productDiscription,
+                  productItem.productPrice,
+                );
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text(
+                      "Added item to cart!",
+                    ),
+                    duration: const Duration(seconds: 2),
+                    action: SnackBarAction(
+                      label: "UNDO",
+                      onPressed: () {
+                        cart.removeSingleItem(productItem.productId);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
           child: InkWell(
             onTap: () => selectProduct(context, productItem.productId),
