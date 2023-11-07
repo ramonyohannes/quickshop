@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+
+import '../providers/products.dart';
+
 class UserProductsItem extends StatelessWidget {
   final String productId;
   final String productTitle;
@@ -14,6 +18,7 @@ class UserProductsItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productData = Provider.of<Products>(context);
     return ListTile(
       leading: CircleAvatar(
         backgroundImage: NetworkImage(productImageUrl),
@@ -30,7 +35,7 @@ class UserProductsItem extends StatelessWidget {
                   color: Theme.of(context).primaryColor,
                 )),
             IconButton(
-                onPressed: () {},
+                onPressed: () => productData.deleteProduct(productId),
                 icon: Icon(
                   Icons.delete,
                   color: Theme.of(context).colorScheme.error,
