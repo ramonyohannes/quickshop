@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quickcart_app/providers/products.dart';
 
 import '../providers/product.dart';
+import '../providers/products.dart';
 
 class EditProducts extends StatefulWidget {
   const EditProducts({super.key});
@@ -13,9 +13,12 @@ class EditProducts extends StatefulWidget {
 }
 
 class _EditProductsState extends State<EditProducts> {
-  final _formKey = GlobalKey<FormState>();
-  final _imageTextController = TextEditingController();
   bool _isInit = true;
+
+  final _formKey = GlobalKey<FormState>();
+
+  final _imageTextController = TextEditingController();
+
   final _titleFocusNode = FocusNode();
   final _priceFocusNode = FocusNode();
   final _discriptionFocusNode = FocusNode();
@@ -51,6 +54,14 @@ class _EditProductsState extends State<EditProducts> {
 
   void _handleImageUrlFocusChange() {
     if (!_imageUrlFocusNode.hasFocus) {
+      if (_imageTextController.text.isEmpty ||
+          (!_imageTextController.text.startsWith('http') &&
+              !_imageTextController.text.startsWith('https')) ||
+          (!_imageTextController.text.endsWith('.png') &&
+              !_imageTextController.text.endsWith('.jpg') &&
+              !_imageTextController.text.endsWith('.jpeg'))) {
+        return;
+      }
       setState(() {});
     }
   }
@@ -116,7 +127,7 @@ class _EditProductsState extends State<EditProducts> {
                 textInputAction: TextInputAction.next,
                 focusNode: _titleFocusNode,
                 validator: (value) {
-                  if (value.toString().isEmpty) {
+                  if (value == null || value.toString().isEmpty) {
                     return 'Please enter some text';
                   }
                   return null;
@@ -144,7 +155,7 @@ class _EditProductsState extends State<EditProducts> {
                 textInputAction: TextInputAction.next,
                 focusNode: _priceFocusNode,
                 validator: (value) {
-                  if (value.toString().isEmpty) {
+                  if (value == null || value.toString().isEmpty) {
                     return 'Please enter a price';
                   }
                   try {
@@ -179,7 +190,7 @@ class _EditProductsState extends State<EditProducts> {
                 focusNode: _discriptionFocusNode,
                 maxLines: 3,
                 validator: (value) {
-                  if (value.toString().isEmpty) {
+                  if (value == null || value.toString().isEmpty) {
                     return 'Please enter a description';
                   }
                   return null;
@@ -232,7 +243,7 @@ class _EditProductsState extends State<EditProducts> {
                       controller: _imageTextController,
                       focusNode: _imageUrlFocusNode,
                       validator: (value) {
-                        if (value.toString().isEmpty) {
+                        if (value == null || value.toString().isEmpty) {
                           return 'Please enter an image URL';
                         }
                         if (!(value.toString().endsWith('.png') ||
