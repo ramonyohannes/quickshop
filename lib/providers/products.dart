@@ -8,39 +8,39 @@ import 'product.dart';
 
 class Products with ChangeNotifier {
   final List<Product> _productItems = [
-    Product(
-      productId: 'p1',
-      productTitle: 'Red Shirt',
-      productDiscription: 'A red shirt - it is pretty red!',
-      productPrice: 29.99,
-      productImageUrl:
-          'https://cdn.pixabay.com/photo/2016/10/02/22/17/red-t-shirt-1710578_1280.jpg',
-    ),
-    Product(
-      productId: 'p2',
-      productTitle: 'Trousers',
-      productDiscription: 'A nice pair of trousers.',
-      productPrice: 59.99,
-      productImageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Trousers%2C_dress_%28AM_1960.022-8%29.jpg/512px-Trousers%2C_dress_%28AM_1960.022-8%29.jpg',
-    ),
-    Product(
-      productId: 'p3',
-      productTitle: 'Yellow Scarf',
-      productDiscription:
-          'Warm and cozy - exactly what you need for the winter.',
-      productPrice: 19.99,
-      productImageUrl:
-          'https://live.staticflickr.com/4043/4438260868_cc79b3369d_z.jpg',
-    ),
-    Product(
-      productId: 'p4',
-      productTitle: 'A Pan',
-      productDiscription: 'Prepare any meal you want.',
-      productPrice: 49.99,
-      productImageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-    ),
+    // Product(
+    //   productId: 'p1',
+    //   productTitle: 'Red Shirt',
+    //   productDiscription: 'A red shirt - it is pretty red!',
+    //   productPrice: 29.99,
+    //   productImageUrl:
+    //       'https://cdn.pixabay.com/photo/2016/10/02/22/17/red-t-shirt-1710578_1280.jpg',
+    // ),
+    // Product(
+    //   productId: 'p2',
+    //   productTitle: 'Trousers',
+    //   productDiscription: 'A nice pair of trousers.',
+    //   productPrice: 59.99,
+    //   productImageUrl:
+    //       'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Trousers%2C_dress_%28AM_1960.022-8%29.jpg/512px-Trousers%2C_dress_%28AM_1960.022-8%29.jpg',
+    // ),
+    // Product(
+    //   productId: 'p3',
+    //   productTitle: 'Yellow Scarf',
+    //   productDiscription:
+    //       'Warm and cozy - exactly what you need for the winter.',
+    //   productPrice: 19.99,
+    //   productImageUrl:
+    //       'https://live.staticflickr.com/4043/4438260868_cc79b3369d_z.jpg',
+    // ),
+    // Product(
+    //   productId: 'p4',
+    //   productTitle: 'A Pan',
+    //   productDiscription: 'Prepare any meal you want.',
+    //   productPrice: 49.99,
+    //   productImageUrl:
+    //       'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
+    // ),
   ];
 
   List<Product> get productItems {
@@ -55,6 +55,34 @@ class Products with ChangeNotifier {
 
   Product findProductById(String id) {
     return _productItems.firstWhere((element) => element.productId == id);
+  }
+
+  Future<void> fetchandResetUserProducts() async {
+    const url =
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products.json";
+
+    final response = await get(Uri.parse(url));
+    final responseData = jsonDecode(response.body) as Map<String, dynamic>;
+    if (responseData.isEmpty) {
+      return;
+    }
+    final List<Product> fetchedProducts = [];
+
+    responseData.forEach((productId, productData) {
+      final newProduct = Product(
+        productId: productId,
+        productTitle: productData['productTitle'],
+        productDiscription: productData['productDiscription'],
+        productPrice: productData['productPrice'],
+        productImageUrl: productData['productImageUrl'],
+        isProductFavorite: productData['isProductFavorite'],
+      );
+      fetchedProducts.add(newProduct);
+    });
+
+    _productItems.clear();
+    _productItems.addAll(fetchedProducts);
+    notifyListeners();
   }
 
   Future<void> addProduct(Product product) async {
@@ -84,12 +112,27 @@ class Products with ChangeNotifier {
     }
   }
 
-  void updateProduct(String productId, Product editedProduct) {
-    final productIndex =
-        _productItems.indexWhere((element) => element.productId == productId);
-    if (productIndex >= 0) {
-      _productItems[productIndex] = editedProduct;
-      notifyListeners();
+  Future<void> updateProduct(String productId, Product editedProduct) async {
+    final url =
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products/$productId.json";
+
+    try {
+      await patch(Uri.parse(url),
+          body: jsonEncode({
+            "productTitle": editedProduct.productTitle,
+            "productDiscription": editedProduct.productDiscription,
+            "productPrice": editedProduct.productPrice,
+            "productImageUrl": editedProduct.productImageUrl,
+          }));
+
+      final productIndex =
+          _productItems.indexWhere((element) => element.productId == productId);
+      if (productIndex >= 0) {
+        _productItems[productIndex] = editedProduct;
+        notifyListeners();
+      }
+    } catch (error) {
+      rethrow;
     }
   }
 

@@ -112,9 +112,19 @@ class _EditProductsState extends State<EditProducts> {
     _formKey.currentState!.save();
     if (isValid) {
       if (editedProduct.productId.isNotEmpty) {
-        Provider.of<Products>(context, listen: false)
-            .updateProduct(editedProduct.productId, editedProduct);
-        Navigator.of(context).pop();
+        try {
+          await Provider.of<Products>(context, listen: false)
+              .updateProduct(editedProduct.productId, editedProduct);
+          setState(() {
+            _isLoading = false;
+            Navigator.of(context).pop();
+          });
+        } catch (error) {
+          await showDialog(
+            context: context,
+            builder: (ctx) => errorAlertDialog(ctx),
+          );
+        }
       } else {
         try {
           await Provider.of<Products>(context, listen: false)
