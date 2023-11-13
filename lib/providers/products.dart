@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+
+import 'package:http/http.dart';
 
 import 'product.dart';
 
@@ -53,16 +57,31 @@ class Products with ChangeNotifier {
     return _productItems.firstWhere((element) => element.productId == id);
   }
 
-  void addProduct(Product product) {
-    final newProduct = Product(
-      productId: DateTime.now().toString(),
-      productTitle: product.productTitle,
-      productDiscription: product.productDiscription,
-      productPrice: product.productPrice,
-      productImageUrl: product.productImageUrl,
-    );
-    _productItems.add(newProduct);
-    notifyListeners();
+  Future<void> addProduct(Product product) async {
+    const url =
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products.json";
+    try {
+      final response = await post(Uri.parse(url),
+          body: jsonEncode({
+            "productTitle": product.productTitle,
+            "productDiscription": product.productDiscription,
+            "productPrice": product.productPrice,
+            "productImageUrl": product.productImageUrl,
+            "isProductFavorite": product.getIsProductFavorite,
+          }));
+
+      final newProduct = Product(
+        productId: jsonDecode(response.body)['name'],
+        productTitle: product.productTitle,
+        productDiscription: product.productDiscription,
+        productPrice: product.productPrice,
+        productImageUrl: product.productImageUrl,
+      );
+      _productItems.add(newProduct);
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
   }
 
   void updateProduct(String productId, Product editedProduct) {
