@@ -25,27 +25,24 @@ class ProductsOverViewScreen extends StatefulWidget {
 
 class _ProductsOverViewScreenState extends State<ProductsOverViewScreen> {
   bool _showOnlyFavorites = false;
-  bool _isLoading = false;
+  bool _isDataFetched = false;
+  late Future<void> _fetchDataFuture = Future.value();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isDataFetched) {
+      // Trigger the fetching of data only once
+      _fetchDataFuture = Provider.of<Products>(context, listen: false)
+          .fetchandResetUserProducts();
+      _isDataFetched = true;
+    }
+  }
 
   void selectProduct(BuildContext context) {
     Navigator.of(context).pushNamed(
       CartScreen.routeName,
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      _isLoading = true;
-    });
-    Provider.of<Products>(context, listen: false)
-        .fetchandResetUserProducts()
-        .then((_) {
-      setState(() {
-        _isLoading = false;
-      });
-    });
   }
 
   PopupMenuButton<MenuOption> buildPopupMenuButton() {
@@ -81,34 +78,40 @@ class _ProductsOverViewScreenState extends State<ProductsOverViewScreen> {
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('QuickCart'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                buildPopupMenuButton(),
-                InkWell(
-                  onTap: () => selectProduct(context),
-                  child: CartBadge(
-                    value: cart.getCartItemCount.toString(),
-                    child: const Icon(
-                      Icons.shopping_cart_rounded,
+        appBar: AppBar(
+          title: const Text('QuickCart'),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  buildPopupMenuButton(),
+                  InkWell(
+                    onTap: () => selectProduct(context),
+                    child: CartBadge(
+                      value: cart.getCartItemCount.toString(),
+                      child: const Icon(
+                        Icons.shopping_cart_rounded,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-      drawer: const SideDrawer(),
-      body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : ProductsGrid(_showOnlyFavorites),
-    );
+          ],
+        ),
+        drawer: const SideDrawer(),
+        body: FutureBuilder(
+          future: _fetchDataFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return errorAlertDialog(context);
+            } else {
+              return ProductsGrid(_showOnlyFavorites);
+            }
+          },
+        ));
   }
 }
