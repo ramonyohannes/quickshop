@@ -25,11 +25,27 @@ class ProductsOverViewScreen extends StatefulWidget {
 
 class _ProductsOverViewScreenState extends State<ProductsOverViewScreen> {
   bool _showOnlyFavorites = false;
+  bool _isLoading = false;
 
   void selectProduct(BuildContext context) {
     Navigator.of(context).pushNamed(
       CartScreen.routeName,
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _isLoading = true;
+    });
+    Provider.of<Products>(context, listen: false)
+        .fetchandResetUserProducts()
+        .then((_) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
   }
 
   PopupMenuButton<MenuOption> buildPopupMenuButton() {
@@ -65,45 +81,34 @@ class _ProductsOverViewScreenState extends State<ProductsOverViewScreen> {
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('QuickCart'),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  buildPopupMenuButton(),
-                  InkWell(
-                    onTap: () => selectProduct(context),
-                    child: CartBadge(
-                      value: cart.getCartItemCount.toString(),
-                      child: const Icon(
-                        Icons.shopping_cart_rounded,
-                      ),
+      appBar: AppBar(
+        title: const Text('QuickCart'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                buildPopupMenuButton(),
+                InkWell(
+                  onTap: () => selectProduct(context),
+                  child: CartBadge(
+                    value: cart.getCartItemCount.toString(),
+                    child: const Icon(
+                      Icons.shopping_cart_rounded,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-        drawer: const SideDrawer(),
-        body: FutureBuilder(
-          future: Provider.of<Products>(context, listen: false)
-              .fetchandResetUserProducts(),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-              case ConnectionState.active:
-              case ConnectionState.waiting:
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              case ConnectionState.done:
-                if (snapshot.hasError) return errorAlertDialog(context);
-                return ProductsGrid(_showOnlyFavorites);
-            }
-          },
-        ));
+          ),
+        ],
+      ),
+      drawer: const SideDrawer(),
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductsGrid(_showOnlyFavorites),
+    );
   }
 }

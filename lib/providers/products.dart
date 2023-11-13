@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
 import 'product.dart';
+import '../models/http_exception.dart';
 
 class Products with ChangeNotifier {
   final List<Product> _productItems = [
@@ -136,8 +137,26 @@ class Products with ChangeNotifier {
     }
   }
 
-  void deleteProduct(String productId) {
-    _productItems.removeWhere((element) => element.productId == productId);
-    notifyListeners();
+  Future<void> deleteProduct(String productId) async {
+    final url =
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products/$productId.json";
+
+    try {
+      final productIndex =
+          productItems.indexWhere((element) => element.productId == productId);
+      final product = productItems[productIndex];
+
+      _productItems.removeWhere((element) => element.productId == productId);
+      notifyListeners();
+
+      final response = await delete(Uri.parse(url));
+      if (response.statusCode >= 400) {
+        _productItems.insert(productIndex, product);
+        notifyListeners();
+        throw HttpException("Could not delete product");
+      }
+    } catch (error) {
+      rethrow;
+    }
   }
 }
