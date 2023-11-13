@@ -79,7 +79,7 @@ class Order with ChangeNotifier {
         "orderAmount": total,
         "orderProducts": cartProducts
             .map((cartProduct) => {
-                  "productId": cartProduct.cartId,
+                  "cartId": cartProduct.cartId,
                   "productTitle": cartProduct.productTitle,
                   "productPrice": cartProduct.productPrice,
                   "quantity": cartProduct.quantity,
