@@ -26,7 +26,7 @@ class _OrderItemsState extends State<OrderItems> {
         children: [
           ListTile(
             title: Text(
-              "\$${widget.orderItemValue.orderAmount}",
+              "\$${widget.orderItemValue.orderAmount.toStringAsFixed(2)}",
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
