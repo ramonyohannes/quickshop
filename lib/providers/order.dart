@@ -21,7 +21,12 @@ class OrderItem {
 }
 
 class Order with ChangeNotifier {
-  final List<OrderItem> _orders = [];
+  // ignore: prefer_final_fields
+  List<OrderItem> _orders = [];
+  final String authToken;
+  final String userId;
+  Order(this.authToken, this.userId, List<OrderItem> orderItems)
+      : _orders = orderItems;
 
   List<OrderItem> get getOrders {
     return [..._orders];
@@ -32,8 +37,8 @@ class Order with ChangeNotifier {
   }
 
   Future<void> fetchandResetOrders() async {
-    const url =
-        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/orders.json";
+    final url =
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/orders.json?auth=$authToken";
 
     final response = await get(Uri.parse(url));
     final resposeData = jsonDecode(response.body) as Map<String, dynamic>;
@@ -68,8 +73,8 @@ class Order with ChangeNotifier {
   }
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
-    const url =
-        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/orders.json";
+    final url =
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/orders.json?auth=$authToken";
     var currentDateTime = DateTime.now();
 
     final response = await post(

@@ -17,7 +17,6 @@ import './providers/order.dart';
 
 import './themes/theme_data.dart';
 
-//void main() => runApp(const MyApp());
 void main() {
   Provider.debugCheckInvalidValueType = null;
 
@@ -44,8 +43,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => Cart(),
         ),
-        ChangeNotifierProvider(
-          create: (context) => Order(),
+        ProxyProvider<Auth, Order>(
+          update: (ctx, auth, previousOrders) => Order(
+            auth.token,
+            auth.userId,
+            previousOrders == null ? [] : previousOrders.getOrders,
+          ),
         ),
       ],
       child: MaterialApp(
