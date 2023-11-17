@@ -1,6 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/auth.dart';
 
 enum AuthMode { signup, login }
 
@@ -11,6 +14,7 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<Auth>(context);
     final deviceSize = MediaQuery.of(context).size;
     // final transformConfig = Matrix4.rotationZ(-8 * pi / 180);
     // transformConfig.translate(-10.0);
@@ -106,7 +110,7 @@ class _AuthCardState extends State<AuthCard> {
   var _isLoading = false;
   final _passwordController = TextEditingController();
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       // Invalid!
       return;
@@ -117,8 +121,16 @@ class _AuthCardState extends State<AuthCard> {
     });
     if (_authMode == AuthMode.login) {
       // Log user in
+      await Provider.of<Auth>(context, listen: false).signIn(
+        _authData['email']!,
+        _authData['password']!,
+      );
     } else {
       // Sign user up
+      await Provider.of<Auth>(context, listen: false).signUp(
+        _authData['email']!,
+        _authData['password']!,
+      );
     }
     setState(() {
       _isLoading = false;
