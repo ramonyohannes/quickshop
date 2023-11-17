@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
 class Product with ChangeNotifier {
+  final String creatorId;
   final String productId;
   final String productTitle;
   final String productDiscription;
@@ -11,6 +12,7 @@ class Product with ChangeNotifier {
   final String productImageUrl;
   bool isProductFavorite;
   Product({
+    required this.creatorId,
     required this.productId,
     required this.productTitle,
     required this.productDiscription,

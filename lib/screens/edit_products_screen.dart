@@ -39,6 +39,7 @@ class _EditProductsState extends State<EditProducts> {
         final product = Provider.of<Products>(context, listen: false)
             .findProductById(productId);
         editedProduct = Product(
+          creatorId: product.creatorId,
           productId: product.productId,
           productTitle: product.productTitle,
           productDiscription: product.productDiscription,
@@ -87,6 +88,7 @@ class _EditProductsState extends State<EditProducts> {
   }
 
   var editedProduct = Product(
+    creatorId: "",
     productId: "",
     productTitle: "",
     productDiscription: "",
@@ -183,6 +185,7 @@ class _EditProductsState extends State<EditProducts> {
                       onSaved: (newValue) {
                         setState(() {
                           editedProduct = Product(
+                            creatorId: editedProduct.creatorId,
                             productId: editedProduct.productId,
                             productTitle: newValue.toString(),
                             productDiscription:
@@ -219,6 +222,7 @@ class _EditProductsState extends State<EditProducts> {
                       },
                       onSaved: (newValue) {
                         editedProduct = Product(
+                          creatorId: editedProduct.creatorId,
                           productId: editedProduct.productId,
                           productTitle: editedProduct.productTitle,
                           productDiscription: editedProduct.productDiscription,
@@ -248,6 +252,7 @@ class _EditProductsState extends State<EditProducts> {
                       },
                       onSaved: (newValue) {
                         editedProduct = Product(
+                          creatorId: editedProduct.creatorId,
                           productId: editedProduct.productId,
                           productTitle: editedProduct.productTitle,
                           productDiscription: newValue.toString(),
@@ -306,6 +311,7 @@ class _EditProductsState extends State<EditProducts> {
                             },
                             onSaved: (newValue) {
                               editedProduct = Product(
+                                creatorId: editedProduct.creatorId,
                                 productId: editedProduct.productId,
                                 productTitle: editedProduct.productTitle,
                                 productDiscription:

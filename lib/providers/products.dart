@@ -65,8 +65,15 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchandResetUserProducts([bool filterByUser = false]) async {
-    String filterString =
-        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+    String filterLogic = 'orderBy="creatorId"&equalTo="$userId"';
+
+    if (filterByUser) {
+      if (!_productItems.any((product) => product.creatorId == userId)) {
+        filterLogic = 'filterBy="creatorId"&equalTo="$userId"';
+      }
+    }
+
+    String filterString = filterByUser ? filterLogic : '';
 
     var url =
         "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products.json?auth=$authToken&$filterString";
@@ -86,6 +93,7 @@ class Products with ChangeNotifier {
 
     responseData.forEach((productId, productData) {
       final newProduct = Product(
+        creatorId: productData['creatorId'],
         productId: productId,
         productTitle: productData['productTitle'],
         productDiscription: productData['productDiscription'],
@@ -116,6 +124,7 @@ class Products with ChangeNotifier {
           }));
 
       final newProduct = Product(
+        creatorId: userId,
         productId: jsonDecode(response.body)['name'],
         productTitle: product.productTitle,
         productDiscription: product.productDiscription,

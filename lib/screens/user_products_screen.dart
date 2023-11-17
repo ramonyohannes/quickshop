@@ -15,7 +15,7 @@ class UserProductsScreen extends StatelessWidget {
     final productsData = Provider.of<Products>(context, listen: false);
 
     Future<void> refreshData() async {
-      await productsData.fetchandResetUserProducts();
+      await productsData.fetchandResetUserProducts(true);
     }
 
     return Scaffold(
