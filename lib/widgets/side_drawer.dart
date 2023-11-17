@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+
+import '../providers/auth.dart';
+
 class SideDrawer extends StatelessWidget {
   const SideDrawer({super.key});
 
@@ -34,6 +38,16 @@ class SideDrawer extends StatelessWidget {
             title: const Text("Manage Products"),
             onTap: () {
               Navigator.of(context).pushReplacementNamed("/user-products");
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text("Logout"),
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacementNamed("/");
+              Provider.of<Auth>(context, listen: false).logout();
             },
           ),
         ],
