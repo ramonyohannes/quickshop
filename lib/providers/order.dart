@@ -38,7 +38,7 @@ class Order with ChangeNotifier {
 
   Future<void> fetchandResetOrders() async {
     final url =
-        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/orders.json?auth=$authToken";
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/userOrders/$userId.json?auth=$authToken";
 
     final response = await get(Uri.parse(url));
     final resposeData = jsonDecode(response.body) as Map<String, dynamic>;
@@ -74,7 +74,7 @@ class Order with ChangeNotifier {
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
     final url =
-        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/orders.json?auth=$authToken";
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/userOrders/$userId.json?auth=$authToken";
     var currentDateTime = DateTime.now();
 
     final response = await post(

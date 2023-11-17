@@ -50,7 +50,7 @@ class ProductsItem extends StatelessWidget {
                     : const Icon(
                         Icons.favorite_border,
                       ), () async {
-              await productItem.toggleFavoriteStatus(auth.token);
+              await productItem.toggleFavoriteStatus(auth.token, auth.userId);
             }),
             trailing: buildIconButton(
               context,

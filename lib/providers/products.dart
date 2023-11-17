@@ -64,15 +64,24 @@ class Products with ChangeNotifier {
     return _productItems.firstWhere((element) => element.productId == id);
   }
 
-  Future<void> fetchandResetUserProducts() async {
-    final url =
-        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products.json?auth=$authToken";
+  Future<void> fetchandResetUserProducts([bool filterByUser = false]) async {
+    String filterString =
+        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+
+    var url =
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products.json?auth=$authToken&$filterString";
 
     final response = await get(Uri.parse(url));
     final responseData = jsonDecode(response.body) as Map<String, dynamic>;
     if (responseData.isEmpty) {
       return;
     }
+
+    url =
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/userFavorites/$userId.json?auth=$authToken";
+    final favoriteResponse = await get(Uri.parse(url));
+    final favoriteData = jsonDecode(favoriteResponse.body);
+
     final List<Product> fetchedProducts = [];
 
     responseData.forEach((productId, productData) {
@@ -82,7 +91,8 @@ class Products with ChangeNotifier {
         productDiscription: productData['productDiscription'],
         productPrice: productData['productPrice'],
         productImageUrl: productData['productImageUrl'],
-        isProductFavorite: productData['isProductFavorite'],
+        isProductFavorite:
+            favoriteData == null ? false : favoriteData[productId] ?? false,
       );
       fetchedProducts.add(newProduct);
     });
@@ -98,11 +108,11 @@ class Products with ChangeNotifier {
     try {
       final response = await post(Uri.parse(url),
           body: jsonEncode({
+            "creatorId": userId,
             "productTitle": product.productTitle,
             "productDiscription": product.productDiscription,
             "productPrice": product.productPrice,
             "productImageUrl": product.productImageUrl,
-            "isProductFavorite": product.getIsProductFavorite,
           }));
 
       final newProduct = Product(
