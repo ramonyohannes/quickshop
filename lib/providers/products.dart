@@ -65,13 +65,10 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchandResetUserProducts([bool filterByUser = false]) async {
-    String filterLogic = 'orderBy="creatorId"&equalTo="$userId"';
-
-    if (filterByUser) {
-      if (!_productItems.any((product) => product.creatorId == userId)) {
-        filterLogic = 'filterBy="creatorId"&equalTo="$userId"';
-      }
-    }
+    String filterLogic = filterByUser &&
+            !_productItems.any((product) => product.creatorId == userId)
+        ? 'filterBy="creatorId"&equalTo="$userId"'
+        : 'orderBy="creatorId"&equalTo="$userId"';
 
     String filterString = filterByUser ? filterLogic : '';
 
