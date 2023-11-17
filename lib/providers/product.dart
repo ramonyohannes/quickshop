@@ -19,9 +19,9 @@ class Product with ChangeNotifier {
     this.isProductFavorite = false,
   });
 
-  Future<void> toggleFavoriteStatus() async {
+  Future<void> toggleFavoriteStatus(String authToken) async {
     final url =
-        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products/$productId.json";
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products/$productId.json?auth=$authToken";
     final oldStatus = isProductFavorite;
 
     try {

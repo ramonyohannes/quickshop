@@ -17,7 +17,12 @@ import './providers/order.dart';
 
 import './themes/theme_data.dart';
 
-void main() => runApp(const MyApp());
+//void main() => runApp(const MyApp());
+void main() {
+  Provider.debugCheckInvalidValueType = null;
+
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -29,8 +34,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => Auth(),
         ),
-        ChangeNotifierProvider(
-          create: (context) => Products(),
+        ProxyProvider<Auth, Products>(
+          update: (ctx, auth, previousProducts) => Products(
+            auth.token,
+            auth.userId,
+            previousProducts == null ? [] : previousProducts.productItems,
+          ),
         ),
         ChangeNotifierProvider(
           create: (context) => Cart(),
@@ -43,9 +52,14 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: themeData(),
         title: 'QuickCart',
-        home: const AuthScreen(),
+        home: Consumer<Auth>(
+          builder: (ctx, auth, _) {
+            return auth.isAuth
+                ? const ProductsOverViewScreen()
+                : const AuthScreen();
+          },
+        ),
         routes: {
-          // "/": (context) => const ProductsOverViewScreen(),
           ProductDetailScreen.routeName: (context) =>
               const ProductDetailScreen(),
           CartScreen.routeName: (context) => const CartScreen(),

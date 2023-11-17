@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/product.dart';
 import '../providers/cart.dart';
+import '../providers/auth.dart';
 
 import '../screens/products_detail_screen.dart';
 
@@ -26,6 +27,7 @@ class ProductsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final productItem = Provider.of<Product>(context);
     final cart = Provider.of<Cart>(context);
+    final auth = Provider.of<Auth>(context, listen: false);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -48,7 +50,7 @@ class ProductsItem extends StatelessWidget {
                     : const Icon(
                         Icons.favorite_border,
                       ), () async {
-              await productItem.toggleFavoriteStatus();
+              await productItem.toggleFavoriteStatus(auth.token);
             }),
             trailing: buildIconButton(
               context,

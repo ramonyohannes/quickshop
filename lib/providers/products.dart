@@ -8,7 +8,8 @@ import 'product.dart';
 import '../models/http_exception.dart';
 
 class Products with ChangeNotifier {
-  final List<Product> _productItems = [
+  // ignore: prefer_final_fields
+  List<Product> _productItems = [
     // Product(
     //   productId: 'p1',
     //   productTitle: 'Red Shirt',
@@ -43,6 +44,11 @@ class Products with ChangeNotifier {
     //       'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
     // ),
   ];
+  final String authToken;
+  final String userId;
+
+  Products(this.authToken, this.userId, List<Product> productItems)
+      : _productItems = productItems;
 
   List<Product> get productItems {
     return [..._productItems];
@@ -59,8 +65,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchandResetUserProducts() async {
-    const url =
-        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products.json";
+    final url =
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products.json?auth=$authToken";
 
     final response = await get(Uri.parse(url));
     final responseData = jsonDecode(response.body) as Map<String, dynamic>;
@@ -87,8 +93,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
-    const url =
-        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products.json";
+    final url =
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products.json?auth=$authToken";
     try {
       final response = await post(Uri.parse(url),
           body: jsonEncode({
@@ -115,7 +121,7 @@ class Products with ChangeNotifier {
 
   Future<void> updateProduct(String productId, Product editedProduct) async {
     final url =
-        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products/$productId.json";
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products/$productId.json?auth=$authToken";
 
     try {
       await patch(Uri.parse(url),
@@ -139,7 +145,7 @@ class Products with ChangeNotifier {
 
   Future<void> deleteProduct(String productId) async {
     final url =
-        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products/$productId.json";
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products/$productId.json?auth=$authToken";
 
     try {
       final productIndex =
