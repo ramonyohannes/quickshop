@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
@@ -19,39 +21,48 @@ class _OrderItemsState extends State<OrderItems> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      margin: const EdgeInsets.all(10),
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(
-              "\$${widget.orderItemValue.orderAmount.toStringAsFixed(2)}",
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeIn,
+      height: expanded
+          ? min(widget.orderItemValue.orderProducts.length * 20.0 + 130, 200)
+          : 95,
+      child: Card(
+        elevation: 5,
+        margin: const EdgeInsets.all(10),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              ListTile(
+                title: Text(
+                  "\$${widget.orderItemValue.orderAmount.toStringAsFixed(2)}",
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                subtitle: Text(
+                  DateFormat.yMEd().format(widget.orderItemValue.orderTime),
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                trailing: IconButton(
+                  icon: expanded
+                      ? const Icon(Icons.expand_more)
+                      : const Icon(Icons.expand_less),
+                  onPressed: () {
+                    setState(() {
+                      expanded = !expanded;
+                    });
+                  },
+                ),
               ),
-            ),
-            subtitle: Text(
-              DateFormat.yMEd().format(widget.orderItemValue.orderTime),
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            trailing: IconButton(
-              icon: expanded
-                  ? const Icon(Icons.expand_more)
-                  : const Icon(Icons.expand_less),
-              onPressed: () {
-                setState(() {
-                  expanded = !expanded;
-                });
-              },
-            ),
+              if (expanded) OrderDetails(widget.orderItemValue, expanded),
+            ],
           ),
-          if (expanded) OrderDetails(widget.orderItemValue),
-        ],
+        ),
       ),
     );
   }

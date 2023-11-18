@@ -82,9 +82,12 @@ class ProductsItem extends StatelessWidget {
           ),
           child: InkWell(
             onTap: () => selectProduct(context, productItem.productId),
-            child: Image.network(
-              productItem.productImageUrl,
-              fit: BoxFit.cover,
+            child: Hero(
+              tag: productItem.productId,
+              child: Image.network(
+                productItem.productImageUrl,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
         ),
