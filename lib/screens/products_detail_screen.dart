@@ -16,36 +16,49 @@ class ProductDetailScreen extends StatelessWidget {
         Provider.of<Products>(context).findProductById(productId);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loadedProduct.productTitle),
-      ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 250,
-            width: double.infinity,
-            child: Hero(
-              tag: productId,
-              child: Image.network(
-                loadedProduct.productImageUrl,
-                fit: BoxFit.cover,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 300,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Hero(
+                tag: productId,
+                child: Image.network(
+                  loadedProduct.productImageUrl,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
-          const SizedBox(height: 10),
-          Text(
-            '\$${loadedProduct.productPrice}',
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            width: double.infinity,
-            child: Text(
-              loadedProduct.productDiscription,
-              textAlign: TextAlign.center,
-              softWrap: true,
-              style: Theme.of(context).textTheme.bodyMedium,
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                const SizedBox(height: 10),
+                Text(
+                  loadedProduct.productTitle,
+                  style: Theme.of(context).textTheme.labelSmall,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  '\$${loadedProduct.productPrice}',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  width: double.infinity,
+                  child: Text(
+                    loadedProduct.productDiscription,
+                    textAlign: TextAlign.center,
+                    softWrap: true,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+                const SizedBox(height: 800),
+              ],
             ),
           ),
         ],

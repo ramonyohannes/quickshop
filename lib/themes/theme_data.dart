@@ -51,6 +51,12 @@ ThemeData themeData() {
         color: Colors.white,
         fontWeight: FontWeight.bold,
       ),
+      labelSmall: TextStyle(
+        fontSize: 35,
+        fontFamily: 'Lato',
+        color: Colors.black,
+        fontWeight: FontWeight.bold,
+      ),
     ),
     iconTheme: const IconThemeData(
       color: Colors.black,
