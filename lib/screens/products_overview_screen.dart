@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../providers/cart.dart';
 
@@ -67,6 +68,42 @@ class _ProductsOverViewScreenState extends State<ProductsOverViewScreen> {
     );
   }
 
+  Widget shimmerGrid() {
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 3 / 2,
+        crossAxisSpacing: 5,
+        mainAxisSpacing: 5,
+      ),
+      itemBuilder: (ctx, i) => Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          elevation: 6,
+          margin: const EdgeInsets.all(5.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: GridTile(
+              footer: Container(
+                color: Colors.grey,
+                height: 15.0,
+              ),
+              child: Container(
+                color: Colors.grey,
+              ),
+            ),
+          ),
+        ),
+      ),
+      itemCount: 6,
+      padding: const EdgeInsets.all(5.0),
+    );
+  }
+
   AlertDialog errorAlertDialog(BuildContext ctx) {
     return const AlertDialog(
       title: Text("An error occured"),
@@ -105,7 +142,8 @@ class _ProductsOverViewScreenState extends State<ProductsOverViewScreen> {
           future: _fetchDataFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              // return const Center(child: CircularProgressIndicator());
+              return shimmerGrid();
             } else if (snapshot.hasError) {
               return errorAlertDialog(context);
             } else {

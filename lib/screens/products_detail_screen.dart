@@ -12,8 +12,8 @@ class ProductDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var productId = ModalRoute.of(context)!.settings.arguments as String;
-    final loadedProduct =
-        Provider.of<Products>(context).findProductById(productId);
+    final loadedProduct = Provider.of<Products>(context, listen: false)
+        .findProductById(productId);
 
     return Scaffold(
       body: CustomScrollView(
@@ -21,6 +21,13 @@ class ProductDetailScreen extends StatelessWidget {
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
+            leading: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ),
             flexibleSpace: FlexibleSpaceBar(
               background: Hero(
                 tag: productId,
