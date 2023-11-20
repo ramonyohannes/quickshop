@@ -84,8 +84,10 @@ class ProductsItem extends StatelessWidget {
             onTap: () => selectProduct(context, productItem.productId),
             child: Hero(
               tag: productItem.productId,
-              child: Image.network(
-                productItem.productImageUrl,
+              child: FadeInImage.assetNetwork(
+                placeholder:
+                    'lib/assets/images/product-placeholder.png', // Replace with your placeholder asset
+                image: productItem.productImageUrl,
                 fit: BoxFit.cover,
               ),
             ),
