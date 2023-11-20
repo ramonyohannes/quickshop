@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../config.dart';
 import '../models/http_exception.dart';
 
 class Auth with ChangeNotifier {
@@ -31,7 +32,7 @@ class Auth with ChangeNotifier {
     String urlSegnment,
   ) async {
     final url = Uri.parse(
-        "https://identitytoolkit.googleapis.com/v1/accounts:$urlSegnment?key=AIzaSyD-nvfc0AJl1FCsPlTDd5MhLYTNlNO_M2o");
+        "https://identitytoolkit.googleapis.com/v1/accounts:$urlSegnment?key=${Config.firebaseKey}");
 
     try {
       final response = await post(
