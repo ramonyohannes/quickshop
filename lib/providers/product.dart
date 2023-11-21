@@ -30,6 +30,11 @@ class Product with ChangeNotifier {
       isProductFavorite = !isProductFavorite;
       notifyListeners();
 
+      if (isProductFavorite == false) {
+        delete(Uri.parse(url));
+        return;
+      }
+
       final responce = await put(Uri.parse(url),
           body: jsonEncode(
             isProductFavorite,
