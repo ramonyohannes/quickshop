@@ -15,6 +15,7 @@ class EditProducts extends StatefulWidget {
 class _EditProductsState extends State<EditProducts> {
   bool _isInit = true;
   bool _isLoading = false;
+  Function? reloadPage;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -34,7 +35,10 @@ class _EditProductsState extends State<EditProducts> {
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      final productId = ModalRoute.of(context)!.settings.arguments as String;
+      final routeArgs =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final productId = routeArgs['productId'] as String;
+      reloadPage = routeArgs['reloadPage'] as Function;
       if (productId != null && productId.isNotEmpty) {
         final product = Provider.of<Products>(context, listen: false)
             .findProductById(productId);
@@ -120,6 +124,7 @@ class _EditProductsState extends State<EditProducts> {
           setState(() {
             _isLoading = false;
             Navigator.of(context).pop();
+            reloadPage!();
           });
         } catch (error) {
           await showDialog(
@@ -134,6 +139,7 @@ class _EditProductsState extends State<EditProducts> {
           setState(() {
             _isLoading = false;
             Navigator.of(context).pop();
+            reloadPage!();
           });
         } catch (error) {
           await showDialog(

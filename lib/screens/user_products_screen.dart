@@ -31,6 +31,10 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
       });
     }
 
+    void reloadPage() {
+      setState(() {});
+    }
+
     Widget shimmerList() {
       return ListView.builder(
         itemBuilder: (ctx, i) => Shimmer.fromColors(
@@ -61,7 +65,13 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
           actions: [
             IconButton(
               onPressed: () {
-                Navigator.of(context).pushNamed("/edit-products");
+                Navigator.of(context).pushNamed(
+                  "/edit-products",
+                  arguments: {
+                    'productId': "",
+                    'reloadPage': reloadPage,
+                  },
+                );
               },
               icon: const Icon(Icons.add),
             ),
@@ -99,6 +109,7 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
                                       .productItems[index].productTitle,
                                   productImageUrl: productsData
                                       .productItems[index].productImageUrl,
+                                  reloadPage: reloadPage,
                                 );
                               },
                             ),
