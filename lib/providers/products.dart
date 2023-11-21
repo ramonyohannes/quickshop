@@ -177,6 +177,17 @@ class Products with ChangeNotifier {
         notifyListeners();
         throw HttpException("Could not delete product");
       }
+
+      // Delete the product from user favorites
+      final favoriteUrl =
+          "https://quickcart-8cf4a-default-rtdb.firebaseio.com/userFavorites/$userId/$productId.json?auth=$authToken";
+      final favoriteResponce = await delete(Uri.parse(favoriteUrl));
+
+      if (favoriteResponce.statusCode >= 400) {
+        _productItems.insert(productIndex, product);
+        notifyListeners();
+        throw HttpException("Could not delete product");
+      }
     } catch (error) {
       rethrow;
     }
