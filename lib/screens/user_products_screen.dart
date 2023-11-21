@@ -18,21 +18,14 @@ class UserProductsScreen extends StatefulWidget {
 class _UserProductsScreenState extends State<UserProductsScreen> {
   @override
   Widget build(BuildContext context) {
-    final productsData = Provider.of<Products>(context, listen: false);
-    bool isRefreshing = false;
-
-    Future<void> refreshData() async {
-      setState(() {
-        isRefreshing = true;
-      });
-      await productsData.fetchandResetUserProducts(true);
-      setState(() {
-        isRefreshing = false;
-      });
-    }
-
+    final productsData = Provider.of<Products>(context);
+    //bool isRefreshing = false;
     void reloadPage() {
       setState(() {});
+    }
+
+    Future<void> refreshData() async {
+      reloadPage();
     }
 
     Widget shimmerList() {
@@ -55,70 +48,66 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
           ),
         ),
         itemCount: productsData.productItems.length,
+        // itemCount: 5,
         padding: const EdgeInsets.all(10.0),
       );
     }
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Products"),
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(
-                  "/edit-products",
-                  arguments: {
-                    'productId': "",
-                    'reloadPage': reloadPage,
-                  },
-                );
-              },
-              icon: const Icon(Icons.add),
-            ),
-          ],
-        ),
-        drawer: const SideDrawer(),
-        body: RefreshIndicator(
-          onRefresh: refreshData,
-          child: isRefreshing
-              ? shimmerList()
-              : FutureBuilder(
-                  future: Provider.of<Products>(context, listen: false)
-                      .fetchandResetUserProducts(true),
-                  builder: (ctx, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return shimmerList();
-                    } else {
-                      if (snapshot.error != null) {
-                        // Do error handling stuff here
-                        return const Center(child: Text('An error occurred!'));
-                      } else {
-                        return Consumer<Products>(
-                          builder: (ctx, productsData, _) => Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: ListView.separated(
-                              separatorBuilder:
-                                  (BuildContext context, int index) =>
-                                      const Divider(),
-                              itemCount: productsData.productItems.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return UserProductsItem(
-                                  productId: productsData
-                                      .productItems[index].productId,
-                                  productTitle: productsData
-                                      .productItems[index].productTitle,
-                                  productImageUrl: productsData
-                                      .productItems[index].productImageUrl,
-                                  reloadPage: reloadPage,
-                                );
-                              },
-                            ),
-                          ),
-                        );
-                      }
-                    }
-                  },
+      appBar: AppBar(
+        title: const Text("Products"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(
+                "/edit-products",
+                arguments: {
+                  'productId': "",
+                  'reloadPage': reloadPage,
+                },
+              );
+            },
+            icon: const Icon(Icons.add),
+          ),
+        ],
+      ),
+      drawer: const SideDrawer(),
+      body: FutureBuilder(
+        future: Provider.of<Products>(context, listen: false)
+            .fetchandResetUserProducts(true),
+        builder: (ctx, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return shimmerList();
+          } else if (snapshot.hasError) {
+            return const Center(child: Text('An error occurred!'));
+          } else {
+            return RefreshIndicator(
+              onRefresh: refreshData,
+              child: Consumer<Products>(
+                builder: (ctx, productsData, _) => Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: ListView.builder(
+                    itemCount: productsData.productItems.length,
+                    itemBuilder: (_, i) => Column(
+                      children: [
+                        UserProductsItem(
+                          productId: productsData.productItems[i].productId,
+                          productTitle:
+                              productsData.productItems[i].productTitle,
+                          productImageUrl:
+                              productsData.productItems[i].productImageUrl,
+                          reloadPage: reloadPage,
+                        ),
+                        const Divider(),
+                      ],
+                    ),
+                  ),
                 ),
-        ));
+              ),
+            );
+          }
+        },
+      ),
+    );
   }
 }

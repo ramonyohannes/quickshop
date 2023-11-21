@@ -76,6 +76,7 @@ class Products with ChangeNotifier {
         "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products.json?auth=$authToken&$filterString";
 
     final response = await get(Uri.parse(url));
+
     final responseData = jsonDecode(response.body) as Map<String, dynamic>;
     if (responseData.isEmpty) {
       return;
@@ -85,6 +86,9 @@ class Products with ChangeNotifier {
         "https://quickcart-8cf4a-default-rtdb.firebaseio.com/userFavorites/$userId.json?auth=$authToken";
     final favoriteResponse = await get(Uri.parse(url));
     final favoriteData = jsonDecode(favoriteResponse.body);
+    if (responseData.isEmpty) {
+      return;
+    }
 
     final List<Product> fetchedProducts = [];
 
