@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
+
 import '../providers/order.dart';
+
 import '../widgets/side_drawer.dart';
 import '../widgets/order_items.dart';
+import '../widgets/empty_display.dart';
 
 class OrderScreen extends StatelessWidget {
   static const routeName = "/orders-screen";
@@ -71,10 +75,13 @@ class OrderScreen extends StatelessWidget {
               return const Center(child: Text('An error occurred!'));
             } else {
               return Consumer<Order>(
-                builder: (ctx, orderData, child) => ListView.builder(
-                  itemCount: orderData.orderCount(),
-                  itemBuilder: (ctx, i) => OrderItems(orderData.getOrders[i]),
-                ),
+                builder: (ctx, orderData, child) => orderData.orderCount() == 0
+                    ? const EmptyDisplay('No orders found.')
+                    : ListView.builder(
+                        itemCount: orderData.orderCount(),
+                        itemBuilder: (ctx, i) =>
+                            OrderItems(orderData.getOrders[i]),
+                      ),
               );
             }
           }

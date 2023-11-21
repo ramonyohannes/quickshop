@@ -6,6 +6,7 @@ import '../providers/cart.dart';
 import '../providers/order.dart';
 
 import '../widgets/cart_item.dart';
+import '../widgets/empty_display.dart';
 
 class CartScreen extends StatelessWidget {
   static const routeName = "/cart-screen";
@@ -57,20 +58,22 @@ class CartScreen extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: cartItems.length,
-              itemBuilder: (BuildContext context, int index) {
-                String key = cart.cartItems.keys.toList()[index];
-                return CartItems(
-                  productId: key,
-                  title: cartItems[index].productTitle,
-                  price: cartItems[index].productPrice,
-                  quantity: cartItems[index].quantity,
-                );
-              },
-            ),
-          )
+          cart.cartItems.isEmpty
+              ? const EmptyDisplay("No Cart Items")
+              : Expanded(
+                  child: ListView.builder(
+                    itemCount: cartItems.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      String key = cart.cartItems.keys.toList()[index];
+                      return CartItems(
+                        productId: key,
+                        title: cartItems[index].productTitle,
+                        price: cartItems[index].productPrice,
+                        quantity: cartItems[index].quantity,
+                      );
+                    },
+                  ),
+                )
         ],
       ),
     );

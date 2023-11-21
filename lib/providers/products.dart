@@ -64,16 +64,34 @@ class Products with ChangeNotifier {
     return _productItems.firstWhere((element) => element.productId == id);
   }
 
+  int countProduct() {
+    return _productItems.length;
+  }
+
   Future<void> fetchandResetUserProducts([bool filterByUser = false]) async {
-    String filterLogic = filterByUser &&
-            !_productItems.any((product) => product.creatorId == userId)
-        ? 'filterBy="creatorId"&equalTo="$userId"'
-        : 'orderBy="creatorId"&equalTo="$userId"';
+    String queryParameters;
 
-    String filterString = filterByUser ? filterLogic : '';
+    if (filterByUser) {
+      bool userHasProducts =
+          _productItems.any((product) => product.creatorId == userId);
+      if (!userHasProducts) {
+        _productItems.clear();
 
-    var url =
-        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products.json?auth=$authToken&$filterString";
+        notifyListeners();
+        return;
+      }
+
+      if (userHasProducts) {
+        queryParameters = 'orderBy="creatorId"&equalTo="$userId"';
+      } else {
+        queryParameters = 'filterBy="creatorId"&equalTo="$userId"';
+      }
+    } else {
+      queryParameters = '';
+    }
+
+    String url =
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products.json?auth=$authToken&$queryParameters";
 
     final response = await get(Uri.parse(url));
 
@@ -86,13 +104,13 @@ class Products with ChangeNotifier {
         "https://quickcart-8cf4a-default-rtdb.firebaseio.com/userFavorites/$userId.json?auth=$authToken";
     final favoriteResponse = await get(Uri.parse(url));
     final favoriteData = jsonDecode(favoriteResponse.body);
-    if (responseData.isEmpty) {
-      return;
-    }
 
     final List<Product> fetchedProducts = [];
 
     responseData.forEach((productId, productData) {
+      if (productData == null) {
+        return;
+      }
       final newProduct = Product(
         creatorId: productData['creatorId'],
         productId: productId,

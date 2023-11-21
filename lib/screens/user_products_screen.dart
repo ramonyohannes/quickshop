@@ -6,6 +6,7 @@ import '../providers/products.dart';
 
 import '../widgets/user_products_item.dart';
 import '../widgets/side_drawer.dart';
+import '../widgets/empty_display.dart';
 
 class UserProductsScreen extends StatefulWidget {
   static const routeName = '/user-products';
@@ -18,8 +19,8 @@ class UserProductsScreen extends StatefulWidget {
 class _UserProductsScreenState extends State<UserProductsScreen> {
   @override
   Widget build(BuildContext context) {
-    final productsData = Provider.of<Products>(context);
-    //bool isRefreshing = false;
+    final productsData = Provider.of<Products>(context, listen: false);
+
     void reloadPage() {
       setState(() {});
     }
@@ -75,36 +76,39 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
       body: FutureBuilder(
         future: Provider.of<Products>(context, listen: false)
             .fetchandResetUserProducts(true),
-        builder: (ctx, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+        builder: (ctx, dataSnapshot) {
+          if (dataSnapshot.connectionState == ConnectionState.waiting) {
             return shimmerList();
-          } else if (snapshot.hasError) {
-            return const Center(child: Text('An error occurred!'));
           } else {
-            return RefreshIndicator(
-              onRefresh: refreshData,
-              child: Consumer<Products>(
-                builder: (ctx, productsData, _) => Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: ListView.builder(
-                    itemCount: productsData.productItems.length,
-                    itemBuilder: (_, i) => Column(
-                      children: [
-                        UserProductsItem(
-                          productId: productsData.productItems[i].productId,
-                          productTitle:
-                              productsData.productItems[i].productTitle,
-                          productImageUrl:
-                              productsData.productItems[i].productImageUrl,
-                          reloadPage: reloadPage,
-                        ),
-                        const Divider(),
-                      ],
-                    ),
-                  ),
+            if (dataSnapshot.error != null) {
+              return const Center(child: Text('An error occurred!'));
+            } else {
+              return RefreshIndicator(
+                onRefresh: refreshData,
+                child: Consumer<Products>(
+                  builder: (ctx, productData, child) =>
+                      productData.countProduct() == 0
+                          ? const EmptyDisplay('No orders found.')
+                          : ListView.builder(
+                              itemCount: productData.countProduct(),
+                              itemBuilder: (ctx, i) => Column(
+                                children: [
+                                  UserProductsItem(
+                                    productId:
+                                        productsData.productItems[i].productId,
+                                    productTitle: productsData
+                                        .productItems[i].productTitle,
+                                    productImageUrl: productsData
+                                        .productItems[i].productImageUrl,
+                                    reloadPage: reloadPage,
+                                  ),
+                                  const Divider(),
+                                ],
+                              ),
+                            ),
                 ),
-              ),
-            );
+              );
+            }
           }
         },
       ),

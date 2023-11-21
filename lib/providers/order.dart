@@ -43,7 +43,9 @@ class Order with ChangeNotifier {
     final response = await get(Uri.parse(url));
     final resposeData = jsonDecode(response.body) as Map<String, dynamic>;
 
-    if (resposeData.isEmpty) {
+    if (resposeData == null || resposeData.isEmpty) {
+      _orders.clear();
+      notifyListeners();
       return;
     }
     final List<OrderItem> fetchedOrders = [];

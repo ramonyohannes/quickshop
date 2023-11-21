@@ -11,6 +11,7 @@ import '../screens/cart_screen.dart';
 import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
 import '../widgets/side_drawer.dart';
+import '../widgets/empty_display.dart';
 
 enum MenuOption {
   onlyFavorited,
@@ -114,42 +115,45 @@ class _ProductsOverViewScreenState extends State<ProductsOverViewScreen> {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
+
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('QuickCart'),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  buildPopupMenuButton(),
-                  InkWell(
-                    onTap: () => selectProduct(context),
-                    child: CartBadge(
-                      value: cart.getCartItemCount.toString(),
-                      child: const Icon(
-                        Icons.shopping_cart_rounded,
-                      ),
+      appBar: AppBar(
+        title: const Text('QuickCart'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                buildPopupMenuButton(),
+                InkWell(
+                  onTap: () => selectProduct(context),
+                  child: CartBadge(
+                    value: cart.getCartItemCount.toString(),
+                    child: const Icon(
+                      Icons.shopping_cart_rounded,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-        drawer: const SideDrawer(),
-        body: FutureBuilder(
-          future: _fetchDataFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              // return const Center(child: CircularProgressIndicator());
-              return shimmerGrid();
-            } else if (snapshot.hasError) {
-              return errorAlertDialog(context);
-            } else {
-              return ProductsGrid(_showOnlyFavorites);
-            }
-          },
-        ));
+          ),
+        ],
+      ),
+      drawer: const SideDrawer(),
+      body: FutureBuilder(
+        future: _fetchDataFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return shimmerGrid();
+          } else if (snapshot.hasError) {
+            return errorAlertDialog(context);
+          } else if (snapshot.connectionState == ConnectionState.done) {
+            return ProductsGrid(_showOnlyFavorites);
+          } else {
+            return const EmptyDisplay("No Items Found!");
+          }
+        },
+      ),
+    );
   }
 }
