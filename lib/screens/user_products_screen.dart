@@ -88,7 +88,7 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
                 child: Consumer<Products>(
                   builder: (ctx, productData, child) =>
                       productData.countProduct() == 0
-                          ? const EmptyDisplay('No orders found.')
+                          ? const EmptyDisplay('No products found.')
                           : ListView.builder(
                               itemCount: productData.countProduct(),
                               itemBuilder: (ctx, i) => Column(

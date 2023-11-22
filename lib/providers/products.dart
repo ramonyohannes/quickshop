@@ -103,7 +103,8 @@ class Products with ChangeNotifier {
     url =
         "https://quickcart-8cf4a-default-rtdb.firebaseio.com/userFavorites/$userId.json?auth=$authToken";
     final favoriteResponse = await get(Uri.parse(url));
-    final favoriteData = jsonDecode(favoriteResponse.body);
+    final favoriteData =
+        jsonDecode(favoriteResponse.body) as Map<String, dynamic>;
 
     final List<Product> fetchedProducts = [];
 
@@ -118,8 +119,9 @@ class Products with ChangeNotifier {
         productDiscription: productData['productDiscription'],
         productPrice: productData['productPrice'],
         productImageUrl: productData['productImageUrl'],
-        isProductFavorite:
-            favoriteData == null ? false : favoriteData[productId] ?? false,
+        isProductFavorite: favoriteData == null
+            ? false
+            : favoriteData[productId]?["isUserFavorite"] ?? false,
       );
       fetchedProducts.add(newProduct);
     });
