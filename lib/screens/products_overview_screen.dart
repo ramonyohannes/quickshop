@@ -35,8 +35,8 @@ class _ProductsOverViewScreenState extends State<ProductsOverViewScreen> {
     super.didChangeDependencies();
     if (!_isDataFetched) {
       // Trigger the fetching of data only once
-      _fetchDataFuture = Provider.of<Products>(context, listen: false)
-          .fetchandResetUserProducts();
+      _fetchDataFuture =
+          Provider.of<Products>(context, listen: false).fetchandResetProducts();
       _isDataFetched = true;
     }
   }

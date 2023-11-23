@@ -68,7 +68,7 @@ class Products with ChangeNotifier {
     return _productItems.length;
   }
 
-  Future<void> fetchandResetUserProducts([bool filterByUser = false]) async {
+  Future<void> fetchandResetProducts([bool filterByUser = false]) async {
     String queryParameters;
 
     if (filterByUser) {
@@ -88,6 +88,65 @@ class Products with ChangeNotifier {
       }
     } else {
       queryParameters = '';
+    }
+
+    String url =
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/products.json?auth=$authToken&$queryParameters";
+
+    final response = await get(Uri.parse(url));
+
+    final responseData = jsonDecode(response.body) as Map<String, dynamic>;
+    if (responseData.isEmpty) {
+      return;
+    }
+
+    url =
+        "https://quickcart-8cf4a-default-rtdb.firebaseio.com/userFavorites/$userId.json?auth=$authToken";
+    final favoriteResponse = await get(Uri.parse(url));
+    final favoriteData =
+        jsonDecode(favoriteResponse.body) as Map<String, dynamic>;
+
+    final List<Product> fetchedProducts = [];
+
+    responseData.forEach((productId, productData) {
+      if (productData == null) {
+        return;
+      }
+      final newProduct = Product(
+        creatorId: productData['creatorId'],
+        productId: productId,
+        productTitle: productData['productTitle'],
+        productDiscription: productData['productDiscription'],
+        productPrice: productData['productPrice'],
+        productImageUrl: productData['productImageUrl'],
+        isProductFavorite: favoriteData == null
+            ? false
+            : favoriteData[productId]?["isUserFavorite"] ?? false,
+      );
+      fetchedProducts.add(newProduct);
+    });
+
+    _productItems.clear();
+    _productItems.addAll(fetchedProducts);
+    notifyListeners();
+  }
+
+  Future<void> fetchandResetUserProducts() async {
+    String queryParameters;
+
+    bool userHasProducts =
+        _productItems.any((product) => product.creatorId == userId);
+    if (!userHasProducts) {
+      _productItems.clear();
+
+      notifyListeners();
+      return;
+    }
+
+    if (userHasProducts) {
+      queryParameters = 'orderBy="creatorId"&equalTo="$userId"';
+    } else {
+      queryParameters = 'filterBy="creatorId"&equalTo="$userId"';
     }
 
     String url =

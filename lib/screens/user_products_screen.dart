@@ -75,7 +75,7 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
       drawer: const SideDrawer(),
       body: FutureBuilder(
         future: Provider.of<Products>(context, listen: false)
-            .fetchandResetUserProducts(true),
+            .fetchandResetUserProducts(),
         builder: (ctx, dataSnapshot) {
           if (dataSnapshot.connectionState == ConnectionState.waiting) {
             return shimmerList();
